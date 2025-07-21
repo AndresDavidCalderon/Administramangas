@@ -1,9 +1,24 @@
 from pydantic import BaseModel
+from fastapi import Response, status, APIRouter
+
+inventario=[]
+
+mangaRouter = APIRouter(prefix="/mangas")
 
 class Manga(BaseModel):
-    pass
+    title: str
+    author: str
+    usuario_ultimo_prestamo: str = None
 
+class MangaCreado(BaseModel):
+    title: str
+    author: str
 
-def anadir_manga(client, title, author):
-    response = client.post("/mangas/add", json={"title": title, "author": author})
-    return response
+@mangaRouter.post("/add")
+def anadir_manga(manga:MangaCreado,response:Response):
+    response.status_code= status.HTTP_201_CREATED
+    inventario.append(Manga(**manga.dict()))
+
+@mangaRouter.get("/list")
+def listar_mangas():
+    return inventario
