@@ -24,6 +24,10 @@ class TestMangas(unittest.TestCase):
         self.assertEqual(newMangas.status_code, 200)
         mangalist = newMangas.json()
         self.assertNotIn({"title": "Attack on titan", "author": "Hajime Isayama"}, mangalist)
+    
+    def eliminar_manga_no_existe(self):
+        response = client.delete("/mangas/delete/Nonexistent+Manga")
+        self.assertEqual(response.status_code, 404)
 
     def test_lista_de_mangas(self):
         client.post("/mangas/add", json={"title": "The seven deadly sins", "author": "Nakaba Suzuki"})

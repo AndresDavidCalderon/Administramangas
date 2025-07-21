@@ -17,7 +17,8 @@ class MangaCreado(BaseModel):
 @mangaRouter.post("/add")
 def anadir_manga(manga:MangaCreado,response:Response):
     response.status_code= status.HTTP_201_CREATED
-    inventario.append(Manga(**manga.dict()))
+    inventario.append(Manga(**manga.model_dump()))
+
 
 @mangaRouter.get("/list")
 def listar_mangas():
