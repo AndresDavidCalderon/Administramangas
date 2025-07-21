@@ -13,19 +13,19 @@ class TestMangas(unittest.TestCase):
         newMangas = client.get("/mangas/list")
         self.assertEqual(newMangas.status_code, 200)
         mangalist = newMangas.json()
-        self.assertIn({"title": "The seven deadly sins", "author": "Nakaba Suzuki"}, mangalist)
+        self.assertIn({"title": "The seven deadly sins", "author": "Nakaba Suzuki", "usuario_ultimo_prestamo": None}, mangalist)
 
     def test_eliminar_manga(self):
 
-        response = client.delete("/mangas/delete/Attack+on+titan")
+        response = client.delete("/mangas/delete/Attack%20on%20titan")
         self.assertEqual(response.status_code, 200)
         
         newMangas = client.get("/mangas/list")
         self.assertEqual(newMangas.status_code, 200)
         mangalist = newMangas.json()
-        self.assertNotIn({"title": "Attack on titan", "author": "Hajime Isayama"}, mangalist)
-    
-    def eliminar_manga_no_existe(self):
+        self.assertNotIn({"title": "Attack on titan", "author": "Hajime Isayama", "usuario_ultimo_prestamo": None}, mangalist)
+
+    def test_eliminar_manga_no_existe(self):
         response = client.delete("/mangas/delete/Nonexistent+Manga")
         self.assertEqual(response.status_code, 404)
 
@@ -35,5 +35,19 @@ class TestMangas(unittest.TestCase):
         response = client.get("/mangas/list")
         self.assertEqual(response.status_code, 200)
         mangalist = response.json()
-        self.assertIn({"title": "The seven deadly sins", "author": "Nakaba Suzuki"}, mangalist)
-        self.assertIn({"title": "Say the right thing", "author": "Kouji Seo"}, mangalist)
+        self.assertIn({"title": "The seven deadly sins", "author": "Nakaba Suzuki", "usuario_ultimo_prestamo": None}, mangalist)
+        self.assertIn({"title": "Say the right thing", "author": "Kouji Seo", "usuario_ultimo_prestamo": None}, mangalist)
+
+    def test_catalogo(self):
+        response = client.get("/mangas/list?catalogo=true")
+        self.assertEqual(response.status_code, 200)
+        mangalist = response.json()
+        medida_inicial= len(mangalist)
+        client.post("/prestamos/add", json={"manga": "Attack on titan", "doc_usuario": 1, "manga_garantia": {
+            "title": "The promised neverland", "author": "Kaiu Shirai"
+        }}
+        )
+        response = client.get("/mangas/list?catalogo=true")
+        self.assertEqual(response.status_code, 200)
+        mangalist = response.json()
+        self.assertEqual(len(mangalist), medida_inicial - 1)
