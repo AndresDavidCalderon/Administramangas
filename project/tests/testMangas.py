@@ -15,6 +15,10 @@ class TestMangas(unittest.TestCase):
         mangalist = newMangas.json()
         self.assertIn({"title": "The seven deadly sins", "author": "Nakaba Suzuki", "usuario_ultimo_prestamo": None}, mangalist)
 
+    def test_anadir_manga_existente(self):
+        response = client.post("/mangas/add", json={"title": "Attack on titan", "author": "Hajime Isayama"})
+        self.assertEqual(response.status_code, 400) # En el estado por defecto, attack on titan ya existe.
+        
     def test_eliminar_manga(self):
 
         response = client.delete("/mangas/delete/Attack%20on%20titan")

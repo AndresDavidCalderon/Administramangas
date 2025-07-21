@@ -17,6 +17,9 @@ inventario:list[Manga]=[]
 # Añade un manga. Por defecto, va al catalogo.
 @mangaRouter.post("/add")
 def anadir_manga(manga:MangaCreado,response:Response):
+    if any(m.title == manga.title for m in inventario):
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return {"message": "Manga ya existe"}
     response.status_code= status.HTTP_201_CREATED
     inventario.append(Manga(**manga.model_dump()))
 
