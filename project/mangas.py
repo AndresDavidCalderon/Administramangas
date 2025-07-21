@@ -21,9 +21,9 @@ def anadir_manga(manga:MangaCreado,response:Response):
     inventario.append(Manga(**manga.model_dump()))
 
 
-# Lista los mangas. Si catalogo es True, solo devuelve los mangas que no han sido prestados.
 @mangaRouter.get("/list")
 def listar_mangas(catalogo: bool = False):
+    """Devuelve la lista de mangas en el inventario."""
     if catalogo:
         return [manga for manga in inventario if manga.usuario_ultimo_prestamo is None]
     return inventario
