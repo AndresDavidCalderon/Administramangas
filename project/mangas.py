@@ -51,4 +51,10 @@ def eliminar_manga(title: str, response: Response):
     inventario.remove(aeliminar[0])
     response.status_code = status.HTTP_200_OK
 
+def buscar_manga(tiuloManga: str) -> Manga | None:
+    for i in inventario:
+        if i.title == tiuloManga:
+            return i
+    return None
+
 configurar_por_defecto()
