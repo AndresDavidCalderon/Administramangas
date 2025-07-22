@@ -43,14 +43,16 @@ class TestMangas(unittest.TestCase):
         self.assertIn({"title": "Say the right thing", "author": "Kouji Seo", "usuario_ultimo_prestamo": None}, mangalist)
 
     def test_catalogo(self):
+        client.delete("/mangas/reset")
         response = client.get("/mangas/list?catalogo=true")
         self.assertEqual(response.status_code, 200)
         mangalist = response.json()
         medida_inicial= len(mangalist)
-        client.post("/prestamos/add", json={"manga": "Attack on titan", "doc_usuario": 1, "manga_garantia": {
-            "title": "The promised neverland", "author": "Kaiu Shirai"
-        }}
-        )
+        client.post("/prestamos/add", json={
+            "titulo_manga": "Attack on titan",
+            "email_usuario": "ancalderonj@unal.edu.co",
+            "fecha": "2025-07-30"
+        })
         response = client.get("/mangas/list?catalogo=true")
         self.assertEqual(response.status_code, 200)
         mangalist = response.json()

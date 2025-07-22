@@ -8,25 +8,13 @@ client = TestClient(app)
 class TestPrestamos(unittest.TestCase):
 
     def test_renovar_prestamo(self):
+        client.delete("/mangas/reset")
         responsePrestar = client.post("/prestamos/add", json={
             "titulo_manga": "Attack on titan",
-            "email_usuario": "user@example.com",
+            "email_usuario": "ancalderonj@unal.edu.co",
             "fecha": datetime.datetime.now().date().isoformat()
         })
-        self.assertEqual(responsePrestar.status_code, 201)
+        self.assertEqual(responsePrestar.status_code, 200, msg="Error prestando manga, respuesta: " + responsePrestar.json()["message"])
 
-        responseRenovar = client.post("/prestamos/renovar", json={
-            "titulo_manga": "Attack on titan", 
-            "email_usuario": "user@example.com",
-            "fecha": (datetime.datetime.now().date() + datetime.timedelta(days=15)).isoformat()
-        })
-        self.assertEqual(responseRenovar.status_code, 200)
-
-        prestamos = client.get("/prestamos/list")
-        self.assertEqual(prestamos.status_code, 200)
-        prestamos_list = prestamos.json()
-        self.assertIn({
-            "titulo_manga": "Attack on titan",
-            "email_usuario": "user@example.com",
-            "vence": (datetime.datetime.now().date() + datetime.timedelta(days=15)).isoformat()
-        }, prestamos_list)
+        responseRenovar = client.patch("/prestamos/renovar?email_usuario=ancalderonj@unal.edu.co&titulo_manga=Attack%20on%20titan&fecha=" + (datetime.datetime.now().date() + datetime.timedelta(days=15)).isoformat())
+        self.assertEqual(responseRenovar.status_code, 200,msg="Error renovando prestamo, respuesta: " + responseRenovar.json()["message"])

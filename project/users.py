@@ -7,7 +7,9 @@ class Usuario(BaseModel):
     nombre: str
     email: str
 
-usuarios: list[Usuario] = []
+usuarios: list[Usuario] = [
+    Usuario(nombre="David", email="ancalderonj@unal.edu.co")
+]
 
 @usuarioRouter.post("/add", status_code=201)
 def agregar_usuario(usuario: Usuario, response: Response):

@@ -31,6 +31,11 @@ def listar_mangas(catalogo: bool = False):
         return [manga for manga in inventario if manga.usuario_ultimo_prestamo is None]
     return inventario
 
+@mangaRouter.delete("/reset")
+def resetear_inventario():
+    configurar_por_defecto()
+    return {"message": "Inventario reiniciado"}
+
 # Configura el inventario por defecto con algunos mangas.
 def configurar_por_defecto():
     global inventario
@@ -51,9 +56,9 @@ def eliminar_manga(title: str, response: Response):
     inventario.remove(aeliminar[0])
     response.status_code = status.HTTP_200_OK
 
-def buscar_manga(tiuloManga: str) -> Manga | None:
+def buscar_manga(tituloManga: str) -> Manga | None:
     for i in inventario:
-        if i.title == tiuloManga:
+        if i.title.lower() == tituloManga.lower():
             return i
     return None
 
