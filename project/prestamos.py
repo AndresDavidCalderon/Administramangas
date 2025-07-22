@@ -49,6 +49,7 @@ def devolver_manga(titulo: str, response: Response):
 
 @prestamoRouter.patch("/renovar")
 def renovar_prestamo(email_usuario: str, titulo_manga: str, fecha: str, response: Response):
+    """Renueva el préstamo de un manga para un usuario, pone la fecha de devolución nueva especificada."""
     usuario = obtener_usuario_por_email(email_usuario)
     if not usuario:
         response.status_code = status.HTTP_404_NOT_FOUND

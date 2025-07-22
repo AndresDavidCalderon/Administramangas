@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from fastapi import Response, status, APIRouter
+from fastapi import Response, status, APIRouter, Query
 
 mangaRouter = APIRouter(prefix="/mangas")
 
@@ -17,6 +17,9 @@ inventario:list[Manga]=[]
 # Añade un manga. Por defecto, va al catalogo.
 @mangaRouter.post("/add")
 def anadir_manga(manga:MangaCreado,response:Response):
+    """Añade un manga al inventario, si no existe ya otro con el mismo titulo.
+    Si el manga ya existe, devuelve un error 400.
+    El manga pasará a estar disponible para prestar."""
     if any(m.title == manga.title for m in inventario):
         response.status_code = status.HTTP_400_BAD_REQUEST
         return {"message": "Manga ya existe"}
@@ -25,7 +28,7 @@ def anadir_manga(manga:MangaCreado,response:Response):
 
 
 @mangaRouter.get("/list")
-def listar_mangas(catalogo: bool = False):
+def listar_mangas(catalogo: bool = Query(default=False, description="Si es True, devuelve solo los mangas disponibles, sin prestar.")):
     """Devuelve la lista de mangas en el inventario."""
     if catalogo:
         return [manga for manga in inventario if manga.usuario_ultimo_prestamo is None]
@@ -33,6 +36,7 @@ def listar_mangas(catalogo: bool = False):
 
 @mangaRouter.delete("/reset")
 def resetear_inventario():
+    """Reinicia el inventario de mangas al estado por defecto, que incluye algunos mangas predefinidos. Util para unit testing."""
     configurar_por_defecto()
     return {"message": "Inventario reiniciado"}
 
