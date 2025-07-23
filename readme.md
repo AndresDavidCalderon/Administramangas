@@ -10,3 +10,5 @@ Los tests se encuentran en /project/tests, se implementan con unittest y pueden 
 ## Ensayar
 
 La API se puede iniciar con ```fastapi dev ./project/main.py```
+
+### Lo demás lo puedes encontrar en informacion.pdf
